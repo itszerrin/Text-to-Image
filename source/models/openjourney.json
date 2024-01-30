@@ -1,0 +1,17 @@
+{
+    "model": "prompthero/openjourney",
+    "keys": [
+        "strength",
+        "num_interference_steps",
+        "guidance_scale",
+        "use_compel"
+    ],
+    "defaults": [
+        {"strength": 0.8},
+        {"num_interference_steps": 25},
+        {"guidance_scale": 7.5},
+        {"use_compel": false}
+    ],
+    "output_path": "images",
+    "has_url": false
+}
