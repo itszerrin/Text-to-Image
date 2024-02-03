@@ -1,4 +1,4 @@
-from source.Api import Api
+from source.Api import Api, NSFWContentError
 import argparse
 import json
 import logging
@@ -24,7 +24,7 @@ parser.add_argument("--output-name", type=str, help="Filename to save the genera
 args = parser.parse_args()
 
 # Try accessing the config file
-logging.info(f"Trying to access config file: {args.config}...")
+logger.info(f"Trying to access config file: {args.config}...")
 try:
     with open(args.config, "r") as f:
         config = json.load(f)
@@ -40,7 +40,7 @@ try:
 
             for entry in model_config["keys"]:
                 if entry not in config:
-                    logger.error(f"Entry {entry} not found in provided config file! Checking if default value exists...")
+                    logger.warning(f"Entry {entry} not found in provided config file! Checking if default value exists...")
 
                     # Iterate over defaults and find the matching entry
                     default_value = None
@@ -68,7 +68,7 @@ try:
             # Get the version
             version = response.json()["version"]
 
-            logging.info(f"Version: {version}")
+            logger.info(f"Version: {version}")
 
         except requests.exceptions.HTTPError as e:
             logger.error(f"Error while trying to get version: {e}")
@@ -96,6 +96,9 @@ image = api.generate(
     config["use_compel"],
 )
 logger.info(f"Image generated in {api.runtime} ms!")
+
+if image is None:
+    raise NSFWContentError("DeepInfra has detected NSFW content.. returning None")
 
 # check if output directory exists
 if not os.path.exists(args.output_dir):
