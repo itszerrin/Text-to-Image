@@ -10,6 +10,10 @@ from fake_useragent import UserAgent
 # for typing
 from typing import Dict, Union
 
+# ------------------------------------------- EXCEPTIONS ------------------------------------------- #
+class NSFWContentError(Exception):
+    pass
+
 # ------------------------------------------- TYPING ------------------------------------------- #
 Image = Union[bytes, str]
 
@@ -51,7 +55,8 @@ class Api(object):
             "strength": strength,
             "num_interference_steps": num_interference_steps,
             "guidance_scale": guidance_scale,
-            "use_compel": use_compel
+            "use_compel": use_compel,
+            "negative_prompt": "worst quality, low quality, jpeg artifacts, blurry, monochrome, extra digits, bad anatomy"
         }
 
         # special error: sdxl models require a different payload
@@ -65,13 +70,30 @@ class Api(object):
                     "strength": strength,
                     "num_interference_steps": num_interference_steps,
                     "guidance_scale": guidance_scale,
-                    "use_compel": use_compel
+                    "use_compel": use_compel,
+                    "negative_prompt": "worst quality, low quality, jpeg artifacts, blurry, monochrome, extra digits, bad anatomy"
                 }
             }
 
         # make requests
         response = self.session.post(self.url, json=payload)
         response.raise_for_status()
+
+        # check if nsfw was detected
+        if not self.has_url:
+            try:
+                if response.json()["nsfw_content_detected"][0]:
+
+                    return None
+            except: pass
+        
+        else:
+
+            try:
+                assert response.json()["output"] != None
+
+            except AssertionError:
+                return None
 
         # return raw image data in base64
         response_image_url = response.json()[self.output_path][0]
