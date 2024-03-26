@@ -77,7 +77,7 @@ class GUIApp:
         config_file = self.config_entry.get()
         width = int(self.width_entry.get())
         height = int(self.height_entry.get())
-        output_dir = self.output_dir_entry.get()
+        output_dir = self.output_dir_entry.get()  if self.output_name_entry.get() else "output"
         output_name = self.output_name_entry.get() if self.output_name_entry.get() else "generated-output.png"
 
         # Try accessing the config file
