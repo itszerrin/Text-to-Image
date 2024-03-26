@@ -60,8 +60,8 @@ The `config.json` file contains settings for your image generation. Here's an ex
 {
   "model": "your_model_name",
   "strength": 0.8,
-  "num_interference_steps": 5, # >= 1
-  "guidance_scale": 1, # must be >= 1
+  "num_interference_steps": 5,
+  "guidance_scale": 1, 
   "use_compel": true
 }
 ```
