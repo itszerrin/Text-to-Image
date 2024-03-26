@@ -93,6 +93,7 @@ class Api(object):
                 assert response.json()["output"] != None
 
             except AssertionError:
+                print(response.json())
                 return None
 
         # return raw image data in base64
